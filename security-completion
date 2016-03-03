@@ -41,6 +41,7 @@ _security() {
 			return 0
 			;;
 
+
 		find-internet-password|find-generic-password)
 			args="-a -c -C -D -G -j -l -s -g -w" 
 			COMPREPLY=( $(compgen -W "${args}" -- "${cur}") )
@@ -65,7 +66,7 @@ _security() {
 			return 0
 			;;
 
-		-s|-k)
+		-s|-k|lock-keychain|unlock-keychain)
 			args=$(security list-keychains)
 			COMPREPLY=( $(compgen -W "${args}" -- "${cur}") )
 			return 0
