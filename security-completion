@@ -25,10 +25,6 @@ _security() {
       return 0
       ;;
 
-		# Usage: list-keychains [-d user|system|common|dynamic] [-s [keychain...]]
-		#     -d  Use the specified preference domain
-		#     -s  Set the search list to the specified keychains
-		# With no parameters, display the search list.
 		list-keychains)
 			args="-d -s" 
 			COMPREPLY=( $(compgen -W "${args}" -- "${cur}") )
@@ -40,7 +36,6 @@ _security() {
 			COMPREPLY=( $(compgen -W "${args}" -- "${cur}") )
 			return 0
 			;;
-
 
 		find-internet-password|find-generic-password)
 			args="-a -c -C -D -G -j -l -s -g -w" 
