@@ -1,4 +1,5 @@
 # security-completion
+
 Basic bash completion for the security utility.
 
 ## Installation

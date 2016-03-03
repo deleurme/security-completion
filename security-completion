@@ -1,0 +1,127 @@
+# vim: ft=sh 
+#                               _ __       
+#    ________  _______  _______(_) /___  __
+#   / ___/ _ \/ ___/ / / / ___/ / __/ / / /
+#  (__  )  __/ /__/ /_/ / /  / / /_/ /_/ / 
+# /____/\___/\___/\__,_/_/  /_/\__/\__, /  
+#                                 /____/   
+#
+# OSX's security tool.
+#
+
+_security() {
+  local cur prev opts base
+  COMPREPLY=()
+  cur="${COMP_WORDS[COMP_CWORD]}"
+  prev="${COMP_WORDS[COMP_CWORD-1]}"
+
+  commands="-i -l -p -q -v help list-keychains default-keychain login-keychain create-keychain delete-keychain lock-keychain unlock-keychain set-keychain-settings set-keychain-password show-keychain-info dump-keychain create-keypair add-generic-password add-internet-password add-certificates find-generic-password delete-generic-password find-internet-password delete-internet-password find-certificate find-identity delete-certificate set-identity-preference get-identity-preference create-db export import cms install-mds add-trusted-cert remove-trusted-cert dump-trust-settings user-trust-settings-enable trust-settings-export trust-settings-import verify-cert authorize authorizationdb"
+  help_lookup="help list-keychains default-keychain login-keychain create-keychain delete-keychain lock-keychain unlock-keychain set-keychain-settings set-keychain-password show-keychain-info dump-keychain create-keypair add-generic-password add-internet-password add-certificates find-generic-password delete-generic-password find-internet-password delete-internet-password find-certificate find-identity delete-certificate set-identity-preference get-identity-preference create-db export import cms install-mds add-trusted-cert remove-trusted-cert dump-trust-settings user-trust-settings-enable trust-settings-export trust-settings-import verify-cert authorize authorizationdb"
+
+	case "${prev}" in
+    help )
+      args=$(for word in $help_lookup;do echo "$word";done)
+      COMPREPLY=( $(compgen -W "${args}" -- "${cur}") )
+      return 0
+      ;;
+
+		# Usage: list-keychains [-d user|system|common|dynamic] [-s [keychain...]]
+		#     -d  Use the specified preference domain
+		#     -s  Set the search list to the specified keychains
+		# With no parameters, display the search list.
+		list-keychains)
+			args="-d -s" 
+			COMPREPLY=( $(compgen -W "${args}" -- "${cur}") )
+			return 0
+			;;
+
+		export)
+			args="-k -t -f -w -p -P -o " 
+			COMPREPLY=( $(compgen -W "${args}" -- "${cur}") )
+			return 0
+			;;
+
+		find-internet-password|find-generic-password)
+			args="-a -c -C -D -G -j -l -s -g -w" 
+			COMPREPLY=( $(compgen -W "${args}" -- "${cur}") )
+			return 0
+			;;
+
+		-f)
+			args="openssl openssh1 openssh2 bsafe pkcs7 pkcs8 pkcs12 pemseq x509" 
+			COMPREPLY=( $(compgen -W "${args}" -- "${cur}") )
+			return 0
+			;;
+
+		-t)
+			args="certs allKeys pubKeys privKeys identities all" 
+			COMPREPLY=( $(compgen -W "${args}" -- "${cur}") )
+			return 0
+			;;
+
+		-d)
+			args="user system common dynamic" 
+			COMPREPLY=( $(compgen -W "${args}" -- "${cur}") )
+			return 0
+			;;
+
+		-s|-k)
+			args=$(security list-keychains)
+			COMPREPLY=( $(compgen -W "${args}" -- "${cur}") )
+			return 0
+			;;
+ 
+	esac
+  
+  COMPREPLY=($(compgen -W "${commands}" -- "${cur}"))
+  return 0
+}
+
+complete -F _security security
+
+# Usage: security [-h] [-i] [-l] [-p prompt] [-q] [-v] [command] [opt ...]
+#     -i    Run in interactive mode.
+#     -l    Run /usr/bin/leaks -nocontext before exiting.
+#     -p    Set the prompt to "prompt" (implies -i).
+#     -q    Be less verbose.
+#     -v    Be more verbose about what's going on.
+# security commands are:
+#     help              Show all commands, or show usage for a command.
+#     list-keychains    Display or manipulate the keychain search list.
+#     default-keychain  Display or set the default keychain.
+#     login-keychain    Display or set the login keychain.
+#     create-keychain   Create keychains and add them to the search list.
+#     delete-keychain   Delete keychains and remove them from the search list.
+#     lock-keychain     Lock the specified keychain.
+#     unlock-keychain   Unlock the specified keychain.
+#     set-keychain-settings Set settings for a keychain.
+#     set-keychain-password Set password for a keychain.
+#     show-keychain-info Show the settings for keychain.
+#     dump-keychain     Dump the contents of one or more keychains.
+#     create-keypair    Create an asymmetric key pair.
+#     add-generic-password Add a generic password item.
+#     add-internet-password Add an internet password item.
+#     add-certificates  Add certificates to a keychain.
+#     find-generic-password Find a generic password item.
+#     delete-generic-password Delete a generic password item.
+#     find-internet-password Find an internet password item.
+#     delete-internet-password Delete an internet password item.
+#     find-certificate  Find a certificate item.
+#     find-identity     Find an identity (certificate + private key).
+#     delete-certificate Delete a certificate from a keychain.
+#     set-identity-preference Set the preferred identity to use for a service.
+#     get-identity-preference Get the preferred identity to use for a service.
+#     create-db         Create a db using the DL.
+#     export            Export items from a keychain.
+#     import            Import items into a keychain.
+#     cms               Encode or decode CMS messages.
+#     install-mds       Install (or re-install) the MDS database.
+#     add-trusted-cert  Add trusted certificate(s).
+#     remove-trusted-cert Remove trusted certificate(s).
+#     dump-trust-settings Display contents of trust settings.
+#     user-trust-settings-enable Display or manipulate user-level trust settings.
+#     trust-settings-export Export trust settings.
+#     trust-settings-import Import trust settings.
+#     verify-cert       Verify certificate(s).
+#     authorize         Perform authorization operations.
+#     authorizationdb   Make changes to the authorization policy database.
